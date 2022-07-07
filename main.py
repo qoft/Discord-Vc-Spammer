@@ -1,0 +1,7 @@
+import time, json, websocket,easygui, os; from concurrent.futures import ThreadPoolExecutor; print("Choose your tokens.txt"); tokenlist = open(easygui.fileopenbox(), 'r').read().splitlines() if os.name == 'nt' else open("tokens.txt", 'r').read().splitlines(); requests = 0; channel = int(input("Channel ID: ")); server = int(input("Server ID: ")); executor = ThreadPoolExecutor(max_workers=int(1000));os.system(f"title Total Tokens: {len(tokenlist)}")
+def printing():
+    while True: print("Total requests: " + str(requests), end="\r")
+def run(token):
+  while True: ws = websocket.WebSocket(); ws.connect("wss://gateway.discord.gg/?v=8&encoding=json"); ws.send(json.dumps({"op": 2,"d": {"token": token,"properties": {"$os": "windows","$browser": "Discord","$device": "desktop"}}})); ws.send(json.dumps({"op": 4,"d": {"guild_id": server,"channel_id": channel,"self_mute": False,"self_deaf": True, "self_stream?": True, "self_video": False}})); ws.send(json.dumps({"op": 18,"d": {"type": "guild","guild_id": server,"channel_id": channel,"preferred_region": "singapore"}})); ws.send(json.dumps({"op": 1,"d": None})); ws.close(); requests += 1; time.sleep(0.0347)
+for token in tokenlist: executor.submit(run, token)
+input("Spamming the server, press enter to exit")
